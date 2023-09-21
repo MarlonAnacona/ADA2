@@ -1,3 +1,0 @@
-0.128(costo de solución)
-(codigo estudiante,numero de materias asignadas)
-(codigo asignatura asignada)
