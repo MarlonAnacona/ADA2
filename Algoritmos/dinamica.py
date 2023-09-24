@@ -1,11 +1,14 @@
 from entradas import leer_archivo_txt
 
+
+matriz_combinaciones = []
+
 def inicio(nombre_archivo):
     k, r, M, E = leer_archivo_txt(nombre_archivo)
     rocPD(k, r, M, E)
 
 def rocPD(k, r, M, E):
-    #convertirMateriasACupos(M)
+    convertirMateriasACupos(M)
     convertirEstudiantesMateriasVectores(E,M)
     # El código sigue aquí...
     return 0 
@@ -35,7 +38,6 @@ def cuposUnicos(claves,valores):
     contadores = [0] * len(claves)
     
     # Inicializa una matriz vacía para almacenar las combinaciones
-    matriz_combinaciones = []
     
     # Bucle para generar todas las combinaciones posibles
     while True:
@@ -57,5 +59,14 @@ def cuposUnicos(claves,valores):
     # Imprime la matriz
     for fila in matriz_combinaciones:
         print(fila)
+    
+def obtenerCombinacionDeMatriz(matriz_combinaciones, indice):
+    try:
+        return matriz_combinaciones[indice]  # Retorna la combinación en la posición dada.
+    except IndexError:
+        return None  # Retorna None si el índice está fuera de rango.
+
+
 
 inicio("./Pruebas/e_3_5_5.txt")
+print(obtenerCombinacionDeMatriz(matriz_combinaciones,5))
