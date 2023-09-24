@@ -66,7 +66,26 @@ def obtenerCombinacionDeMatriz(matriz_combinaciones, indice):
     except IndexError:
         return None  # Retorna None si el índice está fuera de rango.
 
+<<<<<<< HEAD
 
 
 inicio("./Pruebas/e_3_5_5.txt")
 print(obtenerCombinacionDeMatriz(matriz_combinaciones,5))
+=======
+def calcularInsatisfaccion(materias_asignadas, materias_solicitadas, prioridades):
+    factor = 3 * materias_solicitadas - 1
+    prioridad_total = sum(prioridades)
+    
+    insatisfaccion = (1 - materias_asignadas / materias_solicitadas) * (prioridad_total / factor)
+    return insatisfaccion
+
+# prioridades = [0, 1, 2, 0]
+# materias_solicitadas = 3
+# materias_asignadas = 3  
+
+# insatisfaccion = calcularInsatisfaccion(materias_asignadas, materias_solicitadas, prioridades)
+# print("Insatisfacción:", insatisfaccion)
+
+
+inicio("./Pruebas/e_3_5_5.txt")
+>>>>>>> 9cf7c2be07d13d9a0c4526f7edbd332d9c3074d8
