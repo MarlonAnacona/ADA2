@@ -105,9 +105,13 @@ def asignacionMaterias(materias,estudiantes):
                 if valor_matriz > 0 and valor_estudiante > -1:
                     # Asigna 0 al valor correspondiente del estudiante
                     estudiantes[estudiante][j] = 0
+            print(calcularInsatisfaccion(valores))
 
    for estudiante, valores in estudiantes.items():
     print(f"{estudiante}: {valores}") 
+
+
+
 
 inicio("./Pruebas/e_3_5_5.txt")
 
