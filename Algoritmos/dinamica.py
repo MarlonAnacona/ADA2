@@ -8,16 +8,15 @@ def inicio(nombre_archivo):
     rocPD(k, r, M, E)
 
 def rocPD(k, r, M, E):
-    convertirMateriasACupos(M)
-    convertirEstudiantesMateriasVectores(E,M)
-    # El código sigue aquí...
+
+    asignacionMaterias(convertirMateriasACupos(M),    convertirEstudiantesMateriasVectores(E,M))
     return 0 
 
 def convertirEstudiantesMateriasVectores(E,M):
   matrices_estudiantes = {}
   for codigo, (num_materias, materias) in E.items():
-        # Crear una matriz para el estudiante actual
-        matriz_estudiante = [0] * len(M)
+        # Crear una matriz para el estudiante actual, en caso de no haberla pedido dará -1
+        matriz_estudiante = [-1] * len(M)
         for materia, valor in materias:
             # Usar el orden de la materia en el diccionario base para determinar la posición en la matriz
             indice = list(M.keys()).index(materia)
@@ -27,12 +26,13 @@ def convertirEstudiantesMateriasVectores(E,M):
     # Imprimir las matrices de los estudiantes
   for codigo, matriz in matrices_estudiantes.items():
         print(f"Estudiante {codigo}: {matriz}")
+  return matrices_estudiantes
         
         
 def convertirMateriasACupos(materias):
     claves = list(materias.keys())
     valores = list(materias.values())
-    cuposUnicos(claves,valores)
+    return cuposUnicos(claves,valores)
     
 def cuposUnicos(claves,valores):
     contadores = [0] * len(claves)
@@ -56,9 +56,7 @@ def cuposUnicos(claves,valores):
         if all(c == 0 for c in contadores):
             break
         
-    # Imprime la matriz
-    for fila in matriz_combinaciones:
-        print(fila)
+    return matriz_combinaciones
     
 def obtenerCombinacionDeMatriz(matriz_combinaciones, indice):
     try:
@@ -66,26 +64,52 @@ def obtenerCombinacionDeMatriz(matriz_combinaciones, indice):
     except IndexError:
         return None  # Retorna None si el índice está fuera de rango.
 
-<<<<<<< HEAD
 
 
-inicio("./Pruebas/e_3_5_5.txt")
-print(obtenerCombinacionDeMatriz(matriz_combinaciones,5))
-=======
-def calcularInsatisfaccion(materias_asignadas, materias_solicitadas, prioridades):
-    factor = 3 * materias_solicitadas - 1
-    prioridad_total = sum(prioridades)
-    
-    insatisfaccion = (1 - materias_asignadas / materias_solicitadas) * (prioridad_total / factor)
+
+def calcularInsatisfaccion(  prioridades):
+    calculo=calcularmateriasAsignadasYSolicitadas(prioridades)
+    factor = (3 * calculo[0]) - 1
+    prioridad_total = calculo[2]
+    insatisfaccion = (1 - calculo[1] / calculo[0]) * (prioridad_total / factor)
     return insatisfaccion
 
-# prioridades = [0, 1, 2, 0]
-# materias_solicitadas = 3
-# materias_asignadas = 3  
 
-# insatisfaccion = calcularInsatisfaccion(materias_asignadas, materias_solicitadas, prioridades)
-# print("Insatisfacción:", insatisfaccion)
 
+def calcularmateriasAsignadasYSolicitadas (prioridades):
+    solicitadas = 0
+    asignadas = 0
+    suma= 0
+    for elemento in prioridades:
+        if elemento >= 0:
+            solicitadas += 1
+        if elemento == 0:
+            asignadas += 1
+        if isinstance(elemento, int) and elemento > 0:
+            suma += elemento
+    return solicitadas,asignadas,suma
+   
+   
+   
+def asignacionMaterias(materias,estudiantes):
+   for indice in range(len(materias)):
+    # Obtén la fila correspondiente usando la función
+    fila = obtenerCombinacionDeMatriz(materias, indice)
+    # Si la fila no es None, continúa
+    if fila is not None:
+        # Itera sobre cada estudiante en el diccionario
+        for estudiante, valores in estudiantes.items():
+            # Itera sobre cada elemento en la fila y los valores del estudiante
+            for j, (valor_matriz, valor_estudiante) in enumerate(zip(fila, valores)):
+                # Verifica la condición especificada
+                if valor_matriz > 0 and valor_estudiante > -1:
+                    # Asigna 0 al valor correspondiente del estudiante
+                    estudiantes[estudiante][j] = 0
+
+   for estudiante, valores in estudiantes.items():
+    print(f"{estudiante}: {valores}") 
 
 inicio("./Pruebas/e_3_5_5.txt")
->>>>>>> 9cf7c2be07d13d9a0c4526f7edbd332d9c3074d8
+
+
+
