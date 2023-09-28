@@ -1,16 +1,17 @@
+# from Interfaz.entradas import leer_archivo_txt
 from entradas import leer_archivo_txt
-
 
 matriz_combinaciones = []
 
-def inicio(nombre_archivo):
-    k, r, M, E = leer_archivo_txt(nombre_archivo)
-    rocPD(k, r, M, E)
+# def inicio(nombre_archivo):
+#     k, r, M, E = leer_archivo_txt(nombre_archivo)
+#     rocPD(k, r, M, E)
+
 
 def rocPD(k, r, M, E):
-
     asignacionMaterias(convertirMateriasACupos(M),    convertirEstudiantesMateriasVectores(E,M))
-    return 0 
+    return "Acá acomodo la salida de PD"
+
 
 def convertirEstudiantesMateriasVectores(E,M):
   matrices_estudiantes = {}
@@ -111,9 +112,25 @@ def asignacionMaterias(materias,estudiantes):
     print(f"{estudiante}: {valores}") 
 
 
+# k, r, M, E = leer_archivo_txt("./Pruebas/e_3_20_10.roc")
+# # Ejemplo de uso:
+# k = 3  # Cantidad de materias
+# r = 5  # Cantidad de estudiantes
+# M = {100: 1, 101: 3, 102: 2}  # Materias y sus cupos
+# E = {
+#     1000: (2, [(100, 3), (101, 2)]),
+#     1001: (3, [(102, 5), (100, 1), (101, 2)]),
+#     1002: (2, [(100, 3), (102, 2)]),
+#     1003: (1, [(102, 2)]),
+#     1004: (2, [(100, 1), (101, 4)])
+# }
+# probando = rocPD(k, r, M, E)
+# print(probando)
 
 
-inicio("./Pruebas/e_3_5_5.txt")
+
+
+# inicio("./Pruebas/e_3_20_10.roc")
 
 
 

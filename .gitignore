@@ -1,0 +1,37 @@
+# Archivos y directorios generados automáticamente
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Directorio de entorno virtual (puedes personalizar esto según la herramienta que uses)
+venv/
+env/
+*.env
+
+# Carpeta donde se guardan los paquetes instalados
+lib/
+lib64/
+site-packages/
+dist/
+build/
+*.egg-info/
+.installed.cfg
+MANIFEST
+
+# Carpeta de archivos estáticos y generados por usuarios
+static/
+media/
+
+# Registros y archivos de registro
+*.log
+
+# Ficheros temporales o creados por el sistema
+*~
+*.swp
+.DS_Store
+Thumbs.db
+
+# Archivo de configuración local
+.env
+.env.*
