@@ -91,25 +91,29 @@ def calcularmateriasAsignadasYSolicitadas (prioridades):
    
    
    
-def asignacionMaterias(materias,estudiantes):
-   for indice in range(len(materias)):
-    # Obtén la fila correspondiente usando la función
-    fila = obtenerCombinacionDeMatriz(materias, indice)
-    # Si la fila no es None, continúa
-    if fila is not None:
-        # Itera sobre cada estudiante en el diccionario
-        for estudiante, valores in estudiantes.items():
-            # Itera sobre cada elemento en la fila y los valores del estudiante
-            for j, (valor_matriz, valor_estudiante) in enumerate(zip(fila, valores)):
-                # Verifica la condición especificada
-                if valor_matriz > 0 and valor_estudiante > -1:
-                    # Asigna 0 al valor correspondiente del estudiante
-                    estudiantes[estudiante][j] = 0
-            print(calcularInsatisfaccion(valores))
+def asignacionMaterias(materias, estudiantes):
+    insatisfacciones = {}  # Diccionario para almacenar la insatisfacción para cada estudiante y cada fila
+    estudiantes_originales = dict(estudiantes)  # Crear una copia de los estudiantes para restablecer los valores después de cada fila
 
-   for estudiante, valores in estudiantes.items():
-    print(f"{estudiante}: {valores}") 
+    for indice in range(len(materias)):
+        fila = obtenerCombinacionDeMatriz(materias, indice)
+        if fila is not None:
+            for estudiante, valores in estudiantes.items():
+                for j, (valor_matriz, valor_estudiante) in enumerate(zip(fila, valores)):
+                    if valor_matriz > 0 and valor_estudiante > -1:
+                        estudiantes[estudiante][j] = 0
+                insatisfaccion = calcularInsatisfaccion(valores)
+                # Agregar la insatisfacción al diccionario
+                if estudiante not in insatisfacciones:
+                    insatisfacciones[estudiante] = []
+                insatisfacciones[estudiante].append(insatisfaccion)
 
+                # Restablecer los valores del estudiante para la próxima fila
+                estudiantes[estudiante] = estudiantes_originales[estudiante].copy()
+
+    # Imprimir la insatisfacción para cada estudiante y cada fila
+    for estudiante, insatisfaccion in insatisfacciones.items():
+        print(f"{estudiante}: {insatisfaccion}")
 
 
 
