@@ -1,4 +1,5 @@
 from entradas import leer_archivo_txt
+from itertools import product
 
 
 matriz_combinaciones = []
@@ -92,32 +93,81 @@ def calcularmateriasAsignadasYSolicitadas (prioridades):
    
    
 def asignacionMaterias(materias, estudiantes):
-    insatisfacciones = {}  # Diccionario para almacenar la insatisfacción para cada estudiante y cada fila
-    estudiantes_originales = dict(estudiantes)  # Crear una copia de los estudiantes para restablecer los valores después de cada fila
+    matriz_insatisfacciones = []  # Matriz para almacenar la insatisfacción para cada combinación
 
     for indice in range(len(materias)):
         fila = obtenerCombinacionDeMatriz(materias, indice)
         if fila is not None:
+            total_insatisfaccion = 0
+            total_estudiantes = 0
             for estudiante, valores in estudiantes.items():
                 for j, (valor_matriz, valor_estudiante) in enumerate(zip(fila, valores)):
                     if valor_matriz > 0 and valor_estudiante > -1:
                         estudiantes[estudiante][j] = 0
                 insatisfaccion = calcularInsatisfaccion(valores)
-                # Agregar la insatisfacción al diccionario
-                if estudiante not in insatisfacciones:
-                    insatisfacciones[estudiante] = []
-                insatisfacciones[estudiante].append(insatisfaccion)
+                total_insatisfaccion += insatisfaccion
+                total_estudiantes += 1
 
-                # Restablecer los valores del estudiante para la próxima fila
-                estudiantes[estudiante] = estudiantes_originales[estudiante].copy()
+            # Calcular la insatisfacción promedio para esta combinación
+            insatisfaccion_promedio = total_insatisfaccion / total_estudiantes
 
-    # Imprimir la insatisfacción para cada estudiante y cada fila
-    for estudiante, insatisfaccion in insatisfacciones.items():
-        print(f"{estudiante}: {insatisfaccion}")
+            # Añadir la insatisfacción promedio a la matriz
+            matriz_insatisfacciones.append(insatisfaccion_promedio)
 
+    # Imprimir la matriz de insatisfacciones
+    imprimir_matriz_insatisfaccion(matriz_insatisfacciones)
 
+    # Obtener el índice de la combinación con la menor insatisfacción
+    mejor_indice = matriz_insatisfacciones.index(min(matriz_insatisfacciones))
 
-inicio("./Pruebas/e_3_5_5.txt")
+    print(f"Mejor combinación: {obtenerCombinacionDeMatriz(materias, mejor_indice)}")
+    print(f"Insatisfacción promedio: {min(matriz_insatisfacciones):.2f}")
 
+def imprimir_matriz_insatisfaccion(matriz):
+    print(f"{'vector de combinaciones de cupos':40}", end="")
+    print(f"| {'insatisfacción promedio':25}")
+    print()
 
+    for i, insatisfaccion in enumerate(matriz):
+        print(f"{i+1:40}", end="")
+        print(f"| {insatisfaccion:.2f}")
+        print()
 
+# Llama a la función inicio para empezar
+#inicio("./Pruebas/e_3_5_5.txt")
+
+import copy
+
+def matricular(cupos, solicitudes, materia=0, estado=None):
+    if estado is None:
+        estado = {est: list(valores) for est, valores in solicitudes.items()}  # Inicialización con valores iniciales
+
+    if materia == len(cupos):
+        yield copy.deepcopy(estado)
+        return
+
+    estudiantes_posibles = [e for e in solicitudes.keys()]
+    for estudiante in estudiantes_posibles:
+        if cupos[materia] > 0 and estado[estudiante][materia] != -1:  # Usando estado en lugar de valores_iniciales
+            cupos[materia] -= 1
+            valor_original = estado[estudiante][materia]  # Guardar el valor original
+            estado[estudiante][materia] = 0  # Matriculado
+            yield from matricular(cupos, solicitudes, materia, estado)
+            cupos[materia] += 1
+            estado[estudiante][materia] = valor_original  # Restaurar el valor original
+
+    yield from matricular(cupos, solicitudes, materia + 1, estado)
+
+cupos = [1, 0, 1]
+solicitudes = {
+    'Estudiante 1000': [3, 2, -1],
+    'Estudiante 1001': [1, 2, 5],
+    'Estudiante 1002': [3, -1, 2]
+}
+
+combinaciones = list(matricular(cupos, solicitudes))
+
+for i, combinacion in enumerate(combinaciones, 1):
+    print(f"Combinación {i}:")
+    for estudiante, materias in combinacion.items():
+        print(f"  {estudiante}: {materias}")
