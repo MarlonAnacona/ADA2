@@ -117,6 +117,7 @@ def asignacionMaterias(materias, estudiantes):
     matriz_insatisfacciones = []  # Matriz para almacenar la insatisfacción para cada combinación
     estudiantes_acumulados = {}
     insatisfaccion_promedio=0
+    print (estudiantes)
     for indice in range(len(materias)):
         estudiantes_acumulados.clear()
         fila = obtenerCombinacionDeMatriz(materias, indice)
@@ -150,5 +151,61 @@ def imprimir_matriz_insatisfaccion(matriz):
         print(f"| {insatisfaccion:.2f}")
         print()
 
+
+
+
+estudiantes = {
+    1000: [3, 2, -1],
+    1001: [1, 2, 5],
+    1002: [3, -1, 2],
+    1003: [-1, -1, 2],
+    1004: [1, 4, -1]
+}
+materias = [1,3,2 ]
+
+def calcular_insatisfaccion(asignaciones, estudiantes):
+    ins_general = 0
+    num_estudiantes = len(estudiantes)
+    for estudiante, materias in zip(estudiantes, asignaciones):
+       ins_general+=calcularInsatisfaccion(materias) 
+    print(ins_general / num_estudiantes)
+    return ins_general / num_estudiantes
+
+memo = {}  # Diccionario para almacenar resultados previos
+
+def asignar_materia(estudiantes, materias, asignaciones, est_index=0):
+    # Usa una clave única para representar el estado actual de las materias y el índice del estudiante
+    key = (tuple(materias), est_index)  # tupla (tuple(materias), est_index)
+    
+    # Si el resultado ya ha sido calculado, retórnalo
+    if key in memo:
+        return memo[key]
+
+    if est_index == len(estudiantes):
+        result = calcular_insatisfaccion(asignaciones, estudiantes)
+        memo[key] = result
+        return result
+
+    asignaciones_copy = [list(asig) for asig in asignaciones]
+    ins = []
+    for i, materia in enumerate(materias):
+        if materia > 0 and estudiantes[est_index][i] != -1:
+            materias[i] -= 1
+            asignaciones_copy[est_index][i] = 0
+            ins.append(asignar_materia(estudiantes, materias, asignaciones_copy, est_index + 1))
+            materias[i] += 1
+            asignaciones_copy[est_index][i] = estudiantes[est_index][i]
+        else:
+            ins.append(asignar_materia(estudiantes, materias, asignaciones_copy, est_index + 1))
+
+    result = min(ins)
+    memo[key] = result
+    return result
+
+asignaciones = [[m for m in est] for est in estudiantes.values()]
+ins = asignar_materia(list(estudiantes.values()), materias, asignaciones)
+print(f"Insatisfacción mínima: {ins:.2f}")
+
+
 # Llama a la función inicio para empezar
-inicio("./Pruebas/e_3_5_5.txt")
+#inicio("./Pruebas/e_3_5_5.txt")
