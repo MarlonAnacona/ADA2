@@ -1,17 +1,19 @@
 # from Interfaz.entradas import leer_archivo_txt
 from entradas import leer_archivo_txt
+from itertools import product
+import copy
+from collections import defaultdict
 
 matriz_combinaciones = []
 
-# def inicio(nombre_archivo):
-#     k, r, M, E = leer_archivo_txt(nombre_archivo)
-#     rocPD(k, r, M, E)
-
+def inicio(nombre_archivo):
+    k, r, M, E = leer_archivo_txt(nombre_archivo)
+    rocPD(k, r, M, E)
 
 def rocPD(k, r, M, E):
-    asignacionMaterias(convertirMateriasACupos(M),    convertirEstudiantesMateriasVectores(E,M))
-    return "Acá acomodo la salida de PD"
 
+    asignacionMaterias(convertirMateriasACupos(M),    convertirEstudiantesMateriasVectores(E,M))
+    return 0 
 
 def convertirEstudiantesMateriasVectores(E,M):
   matrices_estudiantes = {}
@@ -91,46 +93,63 @@ def calcularmateriasAsignadasYSolicitadas (prioridades):
     return solicitadas,asignadas,suma
    
    
+def matricular(cupos, solicitudes, materia=0, estado=None):
+    if estado is None:
+        estado = {est: list(valores) for est, valores in solicitudes.items()}  # Inicialización con valores iniciales
+
+    if materia == len(cupos):
+        yield copy.deepcopy(estado)
+        return
+
+    estudiantes_posibles = [e for e in solicitudes.keys()]
+    for estudiante in estudiantes_posibles:
+        if cupos[materia] > 0 and estado[estudiante][materia] != -1:  # Usando estado en lugar de valores_iniciales
+            cupos[materia] -= 1
+            valor_original = estado[estudiante][materia]  # Guardar el valor original
+            estado[estudiante][materia] = 0  # Matriculado
+            yield from matricular(cupos, solicitudes, materia, estado)
+            cupos[materia] += 1
+            estado[estudiante][materia] = valor_original  # Restaurar el valor original
+
+    yield from matricular(cupos, solicitudes, materia + 1, estado)
+
    
-def asignacionMaterias(materias,estudiantes):
-   for indice in range(len(materias)):
-    # Obtén la fila correspondiente usando la función
-    fila = obtenerCombinacionDeMatriz(materias, indice)
-    # Si la fila no es None, continúa
-    if fila is not None:
-        # Itera sobre cada estudiante en el diccionario
+def asignacionMaterias(materias, estudiantes):
+    matriz_insatisfacciones = []  # Matriz para almacenar la insatisfacción para cada combinación
+    estudiantes_acumulados = {}
+    insatisfaccion_promedio=0
+    for indice in range(len(materias)):
+        estudiantes_acumulados.clear()
+        fila = obtenerCombinacionDeMatriz(materias, indice)
         for estudiante, valores in estudiantes.items():
-            # Itera sobre cada elemento en la fila y los valores del estudiante
-            for j, (valor_matriz, valor_estudiante) in enumerate(zip(fila, valores)):
-                # Verifica la condición especificada
-                if valor_matriz > 0 and valor_estudiante > -1:
-                    # Asigna 0 al valor correspondiente del estudiante
-                    estudiantes[estudiante][j] = 0
-            print(calcularInsatisfaccion(valores))
+            estudiantes_acumulados.update({estudiante:valores})
+            if fila is not None:
+                total_insatisfaccion = 0
+                total_estudiantes = 0
+                menorPromedio=[]
+                combinaciones=list(matricular(fila,estudiantes_acumulados))
+                for i, combinacion in enumerate(combinaciones, 1):
+                    total_insatisfaccion = 0
+                    total_estudiantes = 0
+                    for estudiante, materiasEstudiante in combinacion.items():
+                        insatisfaccion = calcularInsatisfaccion(materiasEstudiante)
+                        total_insatisfaccion += insatisfaccion
+                        total_estudiantes += 1
+                    insatisfaccion_promedio = total_insatisfaccion / total_estudiantes
+                    menorPromedio.append(insatisfaccion_promedio)
+                print(min(menorPromedio))
+            matriz_insatisfacciones.append(insatisfaccion_promedio)
 
-   for estudiante, valores in estudiantes.items():
-    print(f"{estudiante}: {valores}") 
+        
+def imprimir_matriz_insatisfaccion(matriz):
+    print(f"{'vector de combinaciones de cupos':40}", end="")
+    print(f"| {'insatisfacción promedio':25}")
+    print()
 
+    for i, insatisfaccion in enumerate(matriz):
+        print(f"{i+1:40}", end="")
+        print(f"| {insatisfaccion:.2f}")
+        print()
 
-# k, r, M, E = leer_archivo_txt("./Pruebas/e_3_20_10.roc")
-# # Ejemplo de uso:
-# k = 3  # Cantidad de materias
-# r = 5  # Cantidad de estudiantes
-# M = {100: 1, 101: 3, 102: 2}  # Materias y sus cupos
-# E = {
-#     1000: (2, [(100, 3), (101, 2)]),
-#     1001: (3, [(102, 5), (100, 1), (101, 2)]),
-#     1002: (2, [(100, 3), (102, 2)]),
-#     1003: (1, [(102, 2)]),
-#     1004: (2, [(100, 1), (101, 4)])
-# }
-# probando = rocPD(k, r, M, E)
-# print(probando)
-
-
-
-
-# inicio("./Pruebas/e_3_20_10.roc")
-
-
-
+# Llama a la función inicio para empezar
+inicio("./Pruebas/e_3_5_5.roc")
