@@ -1,7 +1,8 @@
 from entradas import leer_archivo_txt
-from itertools import product
 import copy
 from collections import defaultdict
+
+import itertools
 
 matriz_combinaciones = []
 calculoInteres={}
@@ -16,15 +17,9 @@ def rocPD(k, r, M, E):
     #asignacionMaterias(convertirMateriasACupos(M),    convertirEstudiantesMateriasVectores(E,M))
     nuevo_estudiantes={}
     estudiantes=convertirEstudiantesMateriasVectores(E,M)
-
-    asignaciones = [[m for m in est] for est in estudiantes.values()]
-    indice=0
-  #  asignacionMaterias(convertirMateriasACupos(M),estudiantes)
-    
-    for i in convertirMateriasACupos(M):
-        print(asignar_materia( estudiantes,i, asignaciones,len(estudiantes)-1,indice))
-        indice=indice+1
-    return 0 
+    cupos = list(M.values())
+    print(asignar_materia(estudiantes,cupos))
+   
 
 
 def convertirEstudiantesMateriasVectores(E,M):
@@ -161,132 +156,104 @@ def calcular_insatisfaccion(asignaciones, estudiantes):
 
 memo = {}  # Diccionario para almacenar resultados previos
 
-def asignar_materia(estudiantes, materias, asignaciones, est_index,indice):
-    keys = list(estudiantes.keys()) 
-    # Usa una clave única para representar el estado actual de las materias y el índice del estudiante
-    key = (tuple(materias), est_index)  # tupla (tuple(materias), est_index)
-    #Copia de las asingaciones originales
-    asignaciones_copy = [list(asig) for asig in asignaciones]
-    #donde se guardara las insatifaciones
-    ins = []
-    # Si el resultado ya ha sido calculado, retórnalo
+
+
+def asignar_materia(estudiante, vectorCupos, memo={}):
+
+    if len(estudiante) == 0:
+        return 0
+    
+    last_key = next(reversed(estudiante.keys()))
+    last_value = estudiante[last_key]
+
+    # Usar tupla para que sea hashable y se pueda usar como clave en dict
+    key = (last_key, tuple(vectorCupos)) 
+
+    # Chequear si el resultado ya fue calculado
     if key in memo:
         return memo[key]
     
-    if est_index == 0 :
-        if indice==0:
-            result = calcular_insatisfaccion(asignaciones, estudiantes)
-            memo[key] = result
-            return  memo[key]  
-        else:    
-            result = calcular_insatisfaccion(asignaciones, estudiantes)
-            memo[key] = result
-            return  memo[key]      
-        
-    if  sum(materias)==0:
-        result = calcular_insatisfaccion(asignaciones, estudiantes)
-        memo[key] = result
-        if indice==0:
-            ins.append(asignar_materia(estudiantes,materias, asignaciones_copy,est_index-1,indice)) 
-            result = min(ins)
-            return result
-
-        else:
-            return  memo[key]
-       
+    if sum(vectorCupos) == 0:
+        return 1
     
-    asignaciones_copy = [list(asig) for asig in asignaciones]
-    ins = []
-    for i, materia in enumerate(materias):
-        if est_index >= 0:
-            if materia > 0:
-                if estudiantes[keys[est_index]][i] != -1:
-                    materias[i] -= 1
-                    asignaciones_copy[est_index][i] = 0
-                    promedio_actual= (asignar_materia(estudiantes, materias, asignaciones_copy, est_index -1,indice))
-                    estudianteInsatifacion=calcularInsatisfaccion(asignaciones_copy[est_index])
-                    suma_total = promedio_actual * est_index
-                    nuevo_total = suma_total + estudianteInsatifacion
-                    nuevo_promedio = nuevo_total / (est_index+1)
-                    materias[i] += 1
-                    asignaciones_copy[est_index][i] =estudiantes[keys[est_index]][i]
-                else:
-                    ins.append(asignar_materia(estudiantes, materias, asignaciones_copy, est_index -1,indice))
+
+    
+   
+    estudianteCopy = estudiante.copy()
+    last_item=estudianteCopy.popitem()
+    for camino in calcularCaminosPosibles(last_value, vectorCupos):
+        result = restar_unidad_si_condicion(camino, vectorCupos)
+        ins = []
+
+        if(len(estudiante)>0):
+            if(len(estudiante)==1):
+                insG = (
+                    calcularInsatisfaccion(camino)
+                    + ((asignar_materia(estudianteCopy, result, memo)) * (len(estudiante)))
+                ) / len(estudiante)
             else:
-                continue
-
-    result = min(ins)
-    memo[key] = result
-    return result
-
-
-# def asignar_materia(estudiantes, materias, asignaciones, est_index=None):
-#     if est_index is None:
-#         est_index = len(estudiantes) - 1  # iniciar desde el último estudiante
-
-#     if est_index < 0:
-#         return calcular_insatisfaccion(asignaciones, estudiantes)
-
-#     asignaciones_copy = [list(asig) for asig in asignaciones]
-#     ins = []
-#     estudiantes_keys = list(estudiantes.keys()) 
-#     for i, materia in enumerate(materias):
-#         clave_actual = estudiantes_keys[est_index]
-#         if materia > 0 and estudiantes[clave_actual][i] != -1:
-#             materias[i] -= 1
-#             asignaciones_copy[est_index][i] = 0
-#             ins.append(asignar_materia(estudiantes, materias, asignaciones_copy, est_index - 1))
-#             # backtracking
-#             materias[i] += 1
-#             asignaciones_copy[est_index][i] = estudiantes[clave_actual][i]
-#         else:
-#             ins.append(asignar_materia(estudiantes, materias, asignaciones_copy, est_index - 1))
-#     return min(ins)
-
-
-# def asignar_materia(estudiantes, materias, asignaciones, est_index=0):
-#     keys = list(estudiantes.keys())  # Lista de claves del diccionario estudiantes
-#     if est_index == len(estudiantes):
-#         return calcular_insatisfaccion(asignaciones, estudiantes)
-#     asignaciones_copy = [list(asig) for asig in asignaciones]
-#     ins = []
-#     for i, materia in enumerate(materias):
-#         if materia > 0 and estudiantes[keys[est_index]][i] != -1:  # Usa keys[est_index] para acceder a la clave correcta
-#             materias[i] -= 1
-#             asignaciones_copy[est_index][i] = 0
-#             ins.append(asignar_materia(estudiantes, materias, asignaciones_copy, est_index + 1))
-#             # backtracking
-#             materias[i] += 1
-#             asignaciones_copy[est_index][i] = estudiantes[keys[est_index]][i]  # Usa keys[est_index] para acceder a la clave correcta
-#         else:
-#             ins.append(asignar_materia(estudiantes, materias, asignaciones_copy, est_index + 1))
-#     return min(ins)
-
-# Llama a la función inicio para empezar
-
-
-# def asignar_materia():
-#     print("santi")
-
-# def asignar_materia2(estudiantes,materias,indiceEstudiante,indiceMateria):
-#     cantidadMa=0
-#     cantidadMs=0
-#     sumatoriaPriorizadaMn=0
-#     capacidadPriorizacion=0
-#     if calculoInteres[str(cantidadMa)+str(cantidadMs)+str(sumatoriaPriorizadaMn)]:
-#         return calculoInteres[str(cantidadMa)+str(cantidadMs)+str(sumatoriaPriorizadaMn)]
+                insG = (
+                    calcularInsatisfaccion(camino)
+                    + ((asignar_materia(estudianteCopy, result, memo)) * (len(estudiante)-1))
+                ) / len(estudiante)
+            ins.append(insG)
+        
     
-#     insatisfacion=calculoInsatifacion2(cantidadMa,cantidadMs,sumatoriaPriorizadaMn,capacidadPriorizacion)
-#     insatisfacion=insatisfacion+asignar_materia2(estudiantes,materias,indiceEstudiante+1,indiceMateria)
-#     calculoInteres[str(cantidadMa)+str(cantidadMs)+str(sumatoriaPriorizadaMn)]=insatisfacion
-#     return insatisfacion
-    
-    
-def calculoInsatifacion2(cantidadMa,cantidadMs,sumatoriaPriorizadaMn,capacidadPriorizacion):
-    insatisfaccion = (1 - cantidadMa/ cantidadMs) * (sumatoriaPriorizadaMn / capacidadPriorizacion)
-    return insatisfaccion
+    # Guardar el resultado en el diccionario antes de retornar
+    memo[key] = min(ins)
+    return min(ins)
 
-inicio("./Pruebas/e_3_5_5.txt")
+    
+def calcularCaminosPosibles(estudiante,cupos):
+    non_neg_one_positions = [i for i, x in enumerate(estudiante) if x != -1 and cupos[i] != 0]
+
+# Generamos todas las combinaciones posibles de esas posiciones
+    for length in range(len(non_neg_one_positions) + 1):
+        for subset in itertools.combinations(non_neg_one_positions, length):
+            new_vector = estudiante.copy()
+            for index in subset:
+                new_vector[index] = 0
+            yield new_vector
+
+
+def restar_unidad_si_condicion(vector1, vector2):
+    """
+    Esta función recibe dos vectores y, para cada posición i, 
+    si vector1[i] > 0 y vector2[i] > 0, resta 1 a vector2[i].
+
+    :param vector1: list, primer vector para chequear la condición.
+    :param vector2: list, segundo vector para restar las unidades.
+    :return: list, vector2 modificado.
+    """
+    # Asegurarte de que los vectores tienen la misma longitud
+    if len(vector1) != len(vector2):
+        raise ValueError("Los vectores deben tener la misma longitud")
+
+    # Crear una copia de vector2 para no modificar el original
+    result_vector = vector2.copy()
+    
+    for i in range(len(vector1)):
+        # Si el elemento en vector1 es mayor que 0...
+        if vector1[i] > 0:
+            # ...y el elemento correspondiente en result_vector es mayor que 0...
+            if result_vector[i] > 0:
+                # ...resta 1 al elemento en result_vector.
+                result_vector[i] -= 1
+            # Si el elemento en result_vector ya es 0, lo mantiene como está
+            else:
+                result_vector[i] = 0
+    
+    return result_vector
+
+estudiante={
+     1000: [3, 2, -1],
+ 1001: [1, 2, 5],
+     1003: [3, -1, 2],
+}
+print(asignar_materia(estudiante,[2,0,0]))
+
+
+#inicio("./Pruebas/e_3_5_5.txt")
 
 
     
