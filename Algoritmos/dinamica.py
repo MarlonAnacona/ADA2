@@ -161,63 +161,63 @@ def calcular_insatisfaccion(asignaciones, estudiantes):
 
 memo = {}  # Diccionario para almacenar resultados previos
 
-# def asignar_materia(estudiantes, materias, asignaciones, est_index,indice):
-#     keys = list(estudiantes.keys()) 
-#     # Usa una clave única para representar el estado actual de las materias y el índice del estudiante
-#     key = (tuple(materias), est_index)  # tupla (tuple(materias), est_index)
-#     #Copia de las asingaciones originales
-#     asignaciones_copy = [list(asig) for asig in asignaciones]
-#     #donde se guardara las insatifaciones
-#     ins = []
-#     # Si el resultado ya ha sido calculado, retórnalo
-#     if key in memo:
-#         return memo[key]
+def asignar_materia(estudiantes, materias, asignaciones, est_index,indice):
+    keys = list(estudiantes.keys()) 
+    # Usa una clave única para representar el estado actual de las materias y el índice del estudiante
+    key = (tuple(materias), est_index)  # tupla (tuple(materias), est_index)
+    #Copia de las asingaciones originales
+    asignaciones_copy = [list(asig) for asig in asignaciones]
+    #donde se guardara las insatifaciones
+    ins = []
+    # Si el resultado ya ha sido calculado, retórnalo
+    if key in memo:
+        return memo[key]
     
-#     if est_index == 0 :
-#         if indice==0:
-#             result = calcular_insatisfaccion(asignaciones, estudiantes)
-#             memo[key] = result
-#             return  memo[key]  
-#         else:    
-#             result = calcular_insatisfaccion(asignaciones, estudiantes)
-#             memo[key] = result
-#             return  memo[key]      
+    if est_index == 0 :
+        if indice==0:
+            result = calcular_insatisfaccion(asignaciones, estudiantes)
+            memo[key] = result
+            return  memo[key]  
+        else:    
+            result = calcular_insatisfaccion(asignaciones, estudiantes)
+            memo[key] = result
+            return  memo[key]      
         
-#     if  sum(materias)==0:
-#         result = calcular_insatisfaccion(asignaciones, estudiantes)
-#         memo[key] = result
-#         if indice==0:
-#             ins.append(asignar_materia(estudiantes,materias, asignaciones_copy,est_index-1,indice)) 
-#             result = min(ins)
-#             return result
+    if  sum(materias)==0:
+        result = calcular_insatisfaccion(asignaciones, estudiantes)
+        memo[key] = result
+        if indice==0:
+            ins.append(asignar_materia(estudiantes,materias, asignaciones_copy,est_index-1,indice)) 
+            result = min(ins)
+            return result
 
-#         else:
-#             return  memo[key]
+        else:
+            return  memo[key]
        
     
-#     asignaciones_copy = [list(asig) for asig in asignaciones]
-#     ins = []
-#     for i, materia in enumerate(materias):
-#         if est_index >= 0:
-#             if materia > 0:
-#                 if estudiantes[keys[est_index]][i] != -1:
-#                     materias[i] -= 1
-#                     asignaciones_copy[est_index][i] = 0
-#                     promedio_actual= (asignar_materia(estudiantes, materias, asignaciones_copy, est_index -1,indice))
-#                     estudianteInsatifacion=calcularInsatisfaccion(asignaciones_copy[est_index])
-#                     suma_total = promedio_actual * est_index
-#                     nuevo_total = suma_total + estudianteInsatifacion
-#                     nuevo_promedio = nuevo_total / (est_index+1)
-#                     materias[i] += 1
-#                     asignaciones_copy[est_index][i] =estudiantes[keys[est_index]][i]
-#                 else:
-#                     ins.append(asignar_materia(estudiantes, materias, asignaciones_copy, est_index -1,indice))
-#             else:
-#                 continue
+    asignaciones_copy = [list(asig) for asig in asignaciones]
+    ins = []
+    for i, materia in enumerate(materias):
+        if est_index >= 0:
+            if materia > 0:
+                if estudiantes[keys[est_index]][i] != -1:
+                    materias[i] -= 1
+                    asignaciones_copy[est_index][i] = 0
+                    promedio_actual= (asignar_materia(estudiantes, materias, asignaciones_copy, est_index -1,indice))
+                    estudianteInsatifacion=calcularInsatisfaccion(asignaciones_copy[est_index])
+                    suma_total = promedio_actual * est_index
+                    nuevo_total = suma_total + estudianteInsatifacion
+                    nuevo_promedio = nuevo_total / (est_index+1)
+                    materias[i] += 1
+                    asignaciones_copy[est_index][i] =estudiantes[keys[est_index]][i]
+                else:
+                    ins.append(asignar_materia(estudiantes, materias, asignaciones_copy, est_index -1,indice))
+            else:
+                continue
 
-#     result = min(ins)
-#     memo[key] = result
-#     return result
+    result = min(ins)
+    memo[key] = result
+    return result
 
 
 # def asignar_materia(estudiantes, materias, asignaciones, est_index=None):
@@ -265,17 +265,21 @@ memo = {}  # Diccionario para almacenar resultados previos
 # Llama a la función inicio para empezar
 
 
-def asignar_materia():
-    print("santi")
+# def asignar_materia():
+#     print("santi")
 
-def asignar_materia2(estudiantes,materias,indiceEstudiante,indiceMateria):
-    cantidadMa=0
-    cantidadMs=0
-    sumatoriaPriorizadaMn=0
-    capacidadPriorizacion=0
-    calculoInteres[str(cantidadMa)+str(cantidadMs)+str(sumatoriaPriorizadaMn)]
-    insatisfacion=calculoInsatifacion2(cantidadMa,cantidadMs,sumatoriaPriorizadaMn,capacidadPriorizacion)
-    insatisfacion=insatisfacion+asignar_materia2(estudiantes,materias,indiceEstudiante+1,indiceMateria)
+# def asignar_materia2(estudiantes,materias,indiceEstudiante,indiceMateria):
+#     cantidadMa=0
+#     cantidadMs=0
+#     sumatoriaPriorizadaMn=0
+#     capacidadPriorizacion=0
+#     if calculoInteres[str(cantidadMa)+str(cantidadMs)+str(sumatoriaPriorizadaMn)]:
+#         return calculoInteres[str(cantidadMa)+str(cantidadMs)+str(sumatoriaPriorizadaMn)]
+    
+#     insatisfacion=calculoInsatifacion2(cantidadMa,cantidadMs,sumatoriaPriorizadaMn,capacidadPriorizacion)
+#     insatisfacion=insatisfacion+asignar_materia2(estudiantes,materias,indiceEstudiante+1,indiceMateria)
+#     calculoInteres[str(cantidadMa)+str(cantidadMs)+str(sumatoriaPriorizadaMn)]=insatisfacion
+#     return insatisfacion
     
     
 def calculoInsatifacion2(cantidadMa,cantidadMs,sumatoriaPriorizadaMn,capacidadPriorizacion):
