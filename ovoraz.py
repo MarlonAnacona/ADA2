@@ -1,15 +1,13 @@
 from pathlib import Path
-from entradas import leer_archivo_txt
 import copy
 
 asignaturasA = {}
 solicitudesA = {}
 cantidadEstudiantesA = 0
 cantidadAsignaturasA = 0
-nombre_archivo_abrir = './Pruebas/e_3_10_5.roc'
+nombre_archivo_abrir = './Pruebas/e_4_30_15.roc'
 
 def inconformidadEstudiante(estudiante, distribucion, solicitudes):
-
     solicitud = set(solicitudes[estudiante])
     asignacion = set(distribucion[estudiante])
     no_asignadas = solicitud - asignacion
@@ -35,8 +33,6 @@ def inconformidadTotal(cantidadEstudiantes, distribucion, solicitudes):
 
     return inconformidadGeneral / cantidadEstudiantes
 
-# devuelve una pareja (A, FhM,Ei(A)) tal que A es la respuesta al problema
-# rocV(k,r,M,E)
 def rocV(cantidadAsignaturas, cantidadEstudiantes, asignaturas, solicitudes):
   solucion = {estudiante: [] for estudiante in solicitudes}
   cuposRestantes = copy.deepcopy(asignaturas)
@@ -56,7 +52,6 @@ def rocV(cantidadAsignaturas, cantidadEstudiantes, asignaturas, solicitudes):
   return [solucion, inconformidad]
 
 def lecturaArchivo(nombreArchivo):
-
   global cantidadAsignaturasA, cantidadEstudiantesA
 with open(nombre_archivo_abrir, 'r') as entrada:
 
@@ -89,7 +84,4 @@ with open(nombre_archivo_abrir, 'r') as entrada:
 lecturaArchivo(nombre_archivo_abrir)
 
 voraz = rocV(cantidadAsignaturasA, cantidadEstudiantesA, asignaturasA, solicitudesA)
-# k, r, M, E = leer_archivo_txt(nombre_archivo_abrir)
-# voraz = rocV(k, r, M, E)
-
 print(voraz)
