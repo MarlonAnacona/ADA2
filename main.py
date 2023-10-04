@@ -56,10 +56,9 @@ def procesamiento_fuerza_bruta(contenido):
     return "Resultado de Fuerza Bruta"
 
 def procesamiento_dinamica(contenido):
-    
     k, r, M, E = cargar_archivo()  # Llama a cargar_archivo para obtener los valores
-    resultado = dinamica.rocPD(k,r,M,E)  # Llama a rocPD con los valores
-    return "Resultado de Programación Dinámica: " + str(resultado)
+    contenido = dinamica.rocPD(k,r,M,E)  # Llama a rocPD con los valores
+    return "Resultado de Programación Dinámica: " + str(contenido)
 
 def procesamiento_voraz(contenido):
     # Implementa la lógica de Algoritmo Voraz aquí
@@ -70,7 +69,7 @@ ventana = tk.Tk()
 ventana.title("Asignación de cupos")
 
 # Área de texto 
-aviso = tk.Label(ventana, text="Por favor primero seleccione una técnica de programación y luego suba un archivo de texto.")
+aviso = tk.Label(ventana, text="Por favor primero seleccione una técnica de programación y luego suba un archivo de texto. Luego de subido puede probarlo con los tres tipos de algoritmos para probar con otro archivo distinto reinicie la interfaz.")
 
 # Crear opciones de programación
 tipo_programacion_var = tk.StringVar()
@@ -82,7 +81,7 @@ opciones_programacion_radios = [tk.Radiobutton(ventana, text=opcion, variable=ti
 # Etiqueta para mostrar el nombre del archivo
 etiqueta_nombre_archivo = tk.Label(ventana, text="Nombre del archivo: ")
 # Botón para procesar el archivo
-boton_procesar = tk.Button(ventana, text="Subir archivo", command=procesar_archivo)
+boton_procesar = tk.Button(ventana, text="Subir archivo y procesar", command=procesar_archivo)
 
 # Área de texto para mostrar el contenido del archivo de entrada
 texto_entrada = tk.Text(ventana, wrap=tk.WORD, width=40, height=10)

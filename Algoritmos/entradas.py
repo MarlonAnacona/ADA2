@@ -26,7 +26,7 @@ def leer_archivo_txt(nombre_archivo):
 
     return k, r, M, E
 
-# nombre_archivo = "./Pruebas/e_3_10_5.roc"
+# nombre_archivo = "./Pruebas/e_3_5_5.roc"
 # k, r, M, E = leer_archivo_txt(nombre_archivo)
 # print(f"k = {k}")
 # print(f"r = {r}")
