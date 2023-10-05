@@ -3,7 +3,7 @@ materias ={}
 asignacion = {}
 cantidadEstudiantesA = 0
 cupos = 0
-nombre_archivo_abrir = 'e_3_5_5.txt'
+nombre_archivo_abrir = './Pruebas/e_3_5_5.txt'
 
 # Función que calcula la inconformidad individual de un estudiante con respecto a su asignación de asignaturas.
 def inconformidadIndividual(estudiante, distribucion, solicitudes):
