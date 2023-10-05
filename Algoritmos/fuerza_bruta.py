@@ -3,7 +3,7 @@ materias ={}
 asignacion = {}
 cantidadEstudiantesA = 0
 cupos = 0
-nombre_archivo_abrir = 'e_3_5_5.txt'
+nombre_archivo_abrir = './Pruebas/e_3_5_5.txt'
 
 # Función que calcula la inconformidad individual de un estudiante con respecto a su asignación de asignaturas.
 def inconformidadIndividual(estudiante, distribucion, solicitudes):
@@ -186,25 +186,8 @@ with open(nombre_archivo_abrir, 'r') as entrada:
 
   entrada.close()
 
-def salida(nombre_archivo, distribucion, inconformidad, tipo_salida):
-    # Create the output file
-    nombre_archivo_salida = f"{nombre_archivo.split('.')[0]}_{tipo_salida}.{nombre_archivo.split('.')[1]}"
-
-    with open(nombre_archivo_salida, 'w', encoding='utf-8') as archivo_salida:
-        # Write the inconformity as a float with 15 decimal places
-        archivo_salida.write(f"{inconformidad:.15f}\n")
-
-        # Iterate through students and their assignments
-        for estudiante, asignaturas in distribucion.items():
-            # Write the student's name and the number of assigned subjects
-            archivo_salida.write(f"{estudiante},{len(asignaturas)}\n")
-            
-            # Write the assigned subjects for the student
-            for asignatura in asignaturas:
-                archivo_salida.write(f"{asignatura}\n")
 
 Entrada(nombre_archivo_abrir)
-
 BrutalForce = rocFB(cupos,cantidadEstudiantesA,materias,asignacion)
-print(BrutalForce)
-salida(nombre_archivo_abrir, BrutalForce[0], BrutalForce[1], 'rocFB')
+print(BrutalForce[0])
+print(BrutalForce[1])
