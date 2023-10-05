@@ -1,10 +1,14 @@
 import tkinter as tk
 from tkinter import filedialog
 from entradas import leer_archivo_txt
+from entradaFB import Entrada
+from entradaV import readFile
 import os
 import shutil
 import time
 from Algoritmos import dinamica
+from Algoritmos import fuerza_bruta
+from Algoritmos import voraz
 
 # Función de procesamiento según el tipo seleccionado
 def procesar_archivo():
@@ -56,10 +60,59 @@ def cargar_archivo():
         return k, r, M, E # Retorna los datos del archivo para que puedan ser utilizados en la función procesar_archivo
 
 
+# Función para cargar un archivo y mostrar su contenido version 2
+def cargar_archivo2():
+    archivo_path = filedialog.askopenfilename(title="Seleccionar archivo de entrada", filetypes=[("Archivos de texto", "*.txt;*.roc")])
+    if archivo_path:
+        nombre_archivo = os.path.basename(archivo_path)  # Obtiene el nombre del archivo
+        
+        # Define la ruta de destino en la carpeta "pruebas"
+        carpeta_pruebas = "./pruebas"
+        destino_path = os.path.join(carpeta_pruebas, nombre_archivo)
+        
+        # Copia el archivo seleccionado a la carpeta "pruebas"
+        shutil.copy(archivo_path, destino_path)
+        
+        etiqueta_nombre_archivo.config(text="Nombre del archivo: " + nombre_archivo)  # Actualiza la etiqueta con el nombre del archivo
+        
+        with open(destino_path, "r") as archivo:
+            contenido = archivo.read()
+            texto_entrada.delete(1.0, tk.END)  # Borra el contenido actual
+            texto_entrada.insert(tk.END, contenido)  # Inserta el contenido del archivo
+
+        # Aquí puedes llamar a la función leer_archivo_txt del otro script y mostrar los resultados en la interfaz
+        cupos, cantidadEstudiantesA, materias, asignacion = Entrada(destino_path)
+        return cupos, cantidadEstudiantesA, materias, asignacion # Retorna los datos del archivo para que puedan ser utilizados en la función procesar_archivo
+
+# Función para cargar un archivo y mostrar su contenido version 3
+def cargar_archivo3():
+    archivo_path = filedialog.askopenfilename(title="Seleccionar archivo de entrada", filetypes=[("Archivos de texto", "*.txt;*.roc")])
+    if archivo_path:
+        nombre_archivo = os.path.basename(archivo_path)  # Obtiene el nombre del archivo
+        
+        # Define la ruta de destino en la carpeta "pruebas"
+        carpeta_pruebas = "./pruebas"
+        destino_path = os.path.join(carpeta_pruebas, nombre_archivo)
+        
+        # Copia el archivo seleccionado a la carpeta "pruebas"
+        shutil.copy(archivo_path, destino_path)
+        
+        etiqueta_nombre_archivo.config(text="Nombre del archivo: " + nombre_archivo)  # Actualiza la etiqueta con el nombre del archivo
+        
+        with open(destino_path, "r") as archivo:
+            contenido = archivo.read()
+            texto_entrada.delete(1.0, tk.END)  # Borra el contenido actual
+            texto_entrada.insert(tk.END, contenido)  # Inserta el contenido del archivo
+
+        k, r, M, E = readFile(destino_path)
+        return k, r, M, E # Retorna los datos del archivo para que puedan ser utilizados en la función procesar_archivo
+
 # Funciones de procesamiento de ejemplo (reemplaza con tus propias implementaciones)
 def procesamiento_fuerza_bruta(contenido):
     # Implementa la lógica de Fuerza Bruta aquí
-    return "Resultado de Fuerza Bruta"
+    cupos, cantidadEstudiantesA, materias, asignacion = cargar_archivo2()
+    contenido = fuerza_bruta.rocFB(cupos, cantidadEstudiantesA, materias, asignacion)
+    return "Resultado de Fuerza Bruta" + str(contenido)
 
 def procesamiento_dinamica(contenido):
     k, r, M, E = cargar_archivo()  # Llama a cargar_archivo para obtener los valores
@@ -68,7 +121,9 @@ def procesamiento_dinamica(contenido):
 
 def procesamiento_voraz(contenido):
     # Implementa la lógica de Algoritmo Voraz aquí
-    return "Resultado de Algoritmo Voraz"
+    k, r, M, E = cargar_archivo3()
+    contenido = voraz.rocV(k, r, M, E)
+    return "Resultado de Algoritmo Voraz" + str(contenido)
 
 # Crear la ventana principal
 ventana = tk.Tk()

@@ -1,9 +1,9 @@
 import time
-materias ={}
-asignacion = {}
-cantidadEstudiantesA = 0
-cupos = 0
-nombre_archivo_abrir = './Pruebas/e_3_5_5.roc'
+# materias ={}
+# asignacion = {}
+# cantidadEstudiantesA = 0
+# cupos = 0
+# nombre_archivo_abrir = './Pruebas/e_3_5_5.roc'
 
 # Función que calcula la inconformidad individual de un estudiante con respecto a su asignación de asignaturas.
 def inconformidadIndividual(estudiante, distribucion, solicitudes):
@@ -154,40 +154,42 @@ def findLength(string):
 
 
 
-def Entrada(nombreArchivo):
-
-  global cupos, cantidadEstudiantesA
-with open(nombre_archivo_abrir, 'r') as entrada:
-
-  cupos = int(entrada.readline())
-
-
-  for lineas in range(0, cupos):
-    linea = entrada.readline()
-    linea = linea.split(",")
-    materias[linea[0]] = int(linea[1])
-
-  cantidadEstudiantesA = int(entrada.readline())
-
-  for estudiantes in range(0, cantidadEstudiantesA):
+def Entrada(nombre_archivo_abrir):
+    global cupos, cantidadEstudiantesA, materias, asignacion
+    materias = {}  # Debes definir el diccionario materias
+    asignacion = {}  # Debes definir el diccionario asignacion
     
-    estudiante = entrada.readline()
-    estudiante = estudiante.split(",")
+    with open(nombre_archivo_abrir, 'r') as entrada:
+        cupos = int(entrada.readline())
 
-    nuevoEstudiante = {}
-    cantidadAsignaturaEstudiante = int(estudiante[1])
-    
-    for linea in range (0, cantidadAsignaturaEstudiante):
-      asigSolicitada = entrada.readline()
-      asigSolicitada = asigSolicitada.split(",")
-      nuevoEstudiante[asigSolicitada[0]] = int(asigSolicitada[1].strip())
+        for lineas in range(0, cupos):
+            linea = entrada.readline()
+            linea = linea.split(",")
+            materias[linea[0]] = int(linea[1])
 
-    asignacion[estudiante[0]] = nuevoEstudiante
+        cantidadEstudiantesA = int(entrada.readline())
 
-  entrada.close()
+        for estudiantes in range(0, cantidadEstudiantesA):
+            estudiante = entrada.readline()
+            estudiante = estudiante.split(",")
+
+            nuevoEstudiante = {}
+            cantidadAsignaturaEstudiante = int(estudiante[1])
+
+            for linea in range(0, cantidadAsignaturaEstudiante):
+                asigSolicitada = entrada.readline()
+                asigSolicitada = asigSolicitada.split(",")
+                nuevoEstudiante[asigSolicitada[0]] = int(asigSolicitada[1].strip())
+
+            asignacion[estudiante[0]] = nuevoEstudiante
+
+    entrada.close()
+    return cupos, cantidadEstudiantesA, materias, asignacion
 
 
-Entrada(nombre_archivo_abrir)
-BrutalForce = rocFB(cupos,cantidadEstudiantesA,materias,asignacion)
-print(BrutalForce[0])
-print(BrutalForce[1])
+
+# entradita = Entrada(nombre_archivo_abrir)
+# print("return entrada",entradita)
+# BrutalForce = rocFB(cupos,cantidadEstudiantesA,materias,asignacion)
+# print(BrutalForce[0])
+# print(BrutalForce[1])
