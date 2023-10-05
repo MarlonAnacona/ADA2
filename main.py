@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
-from entradas import leer_archivo_txt
+from entradaPD import leer_archivo_txt
 from entradaFB import Entrada
 from entradaV import readFile
 import os
