@@ -106,7 +106,26 @@ def combinacionesPosibles(asignaturas, solicitudes):
   opciones = list(permutacion(*opcionesCombinar))
   return opciones
 
-import time
+def format_output(data):
+    # Separa los datos en las dos partes
+    dictionary, number = data
+
+    # Redondea el número a tres decimales
+    number_str = f'{number:.3f}'
+
+    # Inicializa una lista para almacenar las líneas del resultado
+    result = [number_str]
+
+    # Recorre el diccionario y su valor correspondiente
+    for key, values in dictionary.items():
+        key_line = f'{key},{len(values)}'
+        result.append(key_line)
+        result.extend(values)
+
+    # Convierte las líneas en una cadena de texto separada por saltos de línea
+    output = '\n'.join(result)
+
+    return output
 
 # Función que implementa el algoritmo de fuerza bruta para encontrar la asignación óptima.
 def rocFB(cantidadAsignaturas, cantidadEstudiantes, asignaturas, solicitudes):
@@ -133,8 +152,9 @@ def rocFB(cantidadAsignaturas, cantidadEstudiantes, asignaturas, solicitudes):
     tiempo_fin = time.time()
     tiempo_ejecucion = tiempo_fin - tiempo_inicio
     print(f"Tiempo de ejecución de rocFB: {tiempo_ejecucion} segundos")
-    
-    return [mejorOpcion, inconformidad]
+    salida = [mejorOpcion, inconformidad]
+    formato_salida = format_output(salida)
+    return formato_salida
 
 
 
@@ -151,6 +171,7 @@ def findLength(string):
         count += 1
     # Returning count
     return count
+
 
 
 # entradita = Entrada(nombre_archivo_abrir)

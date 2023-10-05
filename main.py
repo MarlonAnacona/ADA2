@@ -6,9 +6,7 @@ from entradaV import readFile
 import os
 import shutil
 import time
-from Algoritmos import dinamica
-from Algoritmos import fuerza_bruta
-from Algoritmos import voraz
+from Algoritmos import dinamica,fuerza_bruta,voraz
 
 # Función de procesamiento según el tipo seleccionado
 def procesar_archivo():
@@ -16,8 +14,12 @@ def procesar_archivo():
     contenido = texto_entrada.get(1.0, tk.END)
     
     if tipo_programacion == "Fuerza Bruta":
+        inicio = time.time()
         # Realizar el procesamiento utilizando Fuerza Bruta
         resultado = procesamiento_fuerza_bruta(contenido)
+        fin = time.time()
+        tiempo_ejecucion = fin - inicio  # Calcula el tiempo de ejecución
+        resultado = f"Resultado de Programación Fuerza bruta\nTiempo de ejecución: {tiempo_ejecucion:.6f} segundos\n{resultado}"
     elif tipo_programacion == "Dinámica":
         inicio = time.time()
         # Realizar el procesamiento utilizando Programación Dinámica
@@ -27,8 +29,12 @@ def procesar_archivo():
         tiempo_ejecucion = fin - inicio  # Calcula el tiempo de ejecución
         resultado = f"Resultado de Programación Dinámica\nTiempo de ejecución: {tiempo_ejecucion:.6f} segundos\n{resultado}"
     elif tipo_programacion == "Voraz":
+        inicio = time.time()
         # Realizar el procesamiento utilizando Algoritmo Voraz
         resultado = procesamiento_voraz(contenido)
+        fin = time.time()
+        tiempo_ejecucion = fin - inicio  # Calcula el tiempo de ejecución
+        resultado = f"Resultado de Programación Voraz\nTiempo de ejecución: {tiempo_ejecucion:.6f} segundos\n{resultado}"
     else:
         resultado = "Tipo de programación no válido"
 
@@ -112,7 +118,7 @@ def procesamiento_fuerza_bruta(contenido):
     # Implementa la lógica de Fuerza Bruta aquí
     cupos, cantidadEstudiantesA, materias, asignacion = cargar_archivo2()
     contenido = fuerza_bruta.rocFB(cupos, cantidadEstudiantesA, materias, asignacion)
-    return "Resultado de Fuerza Bruta" + str(contenido)
+    return "Resultado de Fuerza Bruta \n" + str(contenido)
 
 def procesamiento_dinamica(contenido):
     k, r, M, E = cargar_archivo()  # Llama a cargar_archivo para obtener los valores
@@ -123,7 +129,7 @@ def procesamiento_voraz(contenido):
     # Implementa la lógica de Algoritmo Voraz aquí
     k, r, M, E = cargar_archivo3()
     contenido = voraz.rocV(k, r, M, E)
-    return "Resultado de Algoritmo Voraz" + str(contenido)
+    return "Resultado de Algoritmo Voraz \n" + str(contenido)
 
 # Crear la ventana principal
 ventana = tk.Tk()

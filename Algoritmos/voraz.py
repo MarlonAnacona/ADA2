@@ -27,6 +27,27 @@ def generalDissatisfaction(total_student, distribution, requests):
 
     return general_dissatisfaction / total_student
 
+def format_output(data):
+    # Separa los datos en las dos partes
+    dictionary, number = data
+
+    # Redondea el número a tres decimales
+    number_str = f'{number:.3f}'
+
+    # Inicializa una lista para almacenar las líneas del resultado
+    result = [number_str]
+
+    # Recorre el diccionario y su valor correspondiente
+    for key, values in dictionary.items():
+        key_line = f'{key},{len(values)}'
+        result.append(key_line)
+        result.extend(values)
+
+    # Convierte las líneas en una cadena de texto separada por saltos de línea
+    output = '\n'.join(result)
+
+    return output
+
 def rocV(total_subjects, total_student, subjects, requests):
   answer = {student: [] for student in requests}
   cuposRestantes = copy.deepcopy(subjects)
@@ -42,8 +63,10 @@ def rocV(total_subjects, total_student, subjects, requests):
         cuposRestantes[course] -= 1
   
   dissatisfaction = generalDissatisfaction(total_student, answer, requests)
-  
-  return [answer, dissatisfaction]
+
+  result = [answer, dissatisfaction]
+  output = format_output(result)
+  return output
 
 
 
