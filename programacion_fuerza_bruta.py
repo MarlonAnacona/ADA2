@@ -1,106 +1,210 @@
-import itertools
+import time
+materias ={}
+asignacion = {}
+cantidadEstudiantesA = 0
+cupos = 0
+nombre_archivo_abrir = 'entradas1.txt'
 
-def gamma(X):
-    return 3 * X - 1
+# Función que calcula la inconformidad individual de un estudiante con respecto a su asignación de asignaturas.
+def inconformidadIndividual(estudiante, distribucion, solicitudes):
 
-def calcular_evaluacion(materias, estudiantes, asignacion):
-    evaluacion_total = 0
+    solicitud = list(solicitudes[estudiante])
+    asignacion = list(distribucion[estudiante])
+    no_asignadas = [materia for materia in solicitud if materia not in asignacion]
+    puntos_prioridad = 3 * findLength(solicitud) - 1
+    puntos_no_asignados = 0
 
-    for estudiante, materias_solicitadas in enumerate(estudiantes):
-        materias_asignadas = asignacion[estudiante]
 
-        maj = len(materias_asignadas)
-        msj = len(materias_solicitadas)
 
-        parte_1 = 1 - maj / msj
+    if findLength(no_asignadas) <= findLength(solicitud) // 2:
+        puntos_no_asignados = sum(solicitudes[estudiante][materia] for materia in no_asignadas)
+    else:
+        puntos_no_asignados = puntos_prioridad
+        puntos_no_asignados -= sum(solicitudes[estudiante][materia] for materia in asignacion)
 
-        parte_2_sumatoria = 0
-        for materia_solicitada, prioridad in materias_solicitadas:
-            if materia_solicitada not in materias_asignadas:
-                parte_2_sumatoria += prioridad
+    inconformidad = (1 - findLength(asignacion) / findLength(solicitud)) * (puntos_no_asignados / puntos_prioridad)
 
-        parte_2 = parte_2_sumatoria / gamma(msj)
+    return inconformidad
 
-        insatisfaccion_estudiante = parte_1 * parte_2
 
-        evaluacion_total += insatisfaccion_estudiante
+# Función que calcula la inconformidad total promedio entre todos los estudiantes en una posible asignación de asignaturas.
+def inconformidadTotal(cantidadEstudiantes, posibleAsignacion, solicitudes):
+    inconformidadGeneral = 0
+    totalEstudiantes = 0
 
-    return evaluacion_total
+    for estudiante in solicitudes:
+        inconformidadGeneralEstudiante = inconformidadIndividual(estudiante, posibleAsignacion, solicitudes)
+        inconformidadGeneral += inconformidadGeneralEstudiante
+        totalEstudiantes += 1
 
-def leer_datos_desde_archivo(nombre_archivo):
-    with open(nombre_archivo, 'r') as archivo:
-        # Leer el número de materias.
-        k = int(archivo.readline())
+    return inconformidadGeneral / totalEstudiantes
 
-        # Leer las materias y sus cupos.
-        materias = [archivo.readline().strip().split(',') for _ in range(k)]
+# Función que genera todas las permutaciones posibles de un conjunto de elementos.
+def permutacion(*args):
+    
+    if not args:
+        return [()]
+    
+    result = [[]]
+    for iterable in args:
+        new_result = []
+        for combination in result:
+            for item in iterable:
+                new_result.append(combination + [item])
+        result = new_result
+    
+    return [tuple(combination) for combination in result]
 
-        # Leer el número de estudiantes.
-        r = int(archivo.readline())
 
-        estudiantes = []
-        for _ in range(r):
-            linea_estudiante = archivo.readline().strip().split(',')
-            ej = linea_estudiante[0]
-            sj = int(linea_estudiante[1])
-            materias_solicitadas = []
-            for _ in range(sj):
-                linea_materia = archivo.readline().strip().split(',')
-                sjl = linea_materia[0]
-                pjl = int(linea_materia[1])
-                materias_solicitadas.append((sjl, pjl))
-            estudiantes.append([(ej, sj)] + materias_solicitadas[1:])  # Excluye el código del estudiante de las materias solicitadas
+# Función que implementa la funcionalidad de combinaciones sin repetición.
+def combinations(iterable, r):
+    items = list(iterable)
+    n = len(items)
+    
+    if r > n:
+        return []
 
-    return materias, estudiantes
-def asignacion_fuerza_bruta(materias, estudiantes):
-    mejor_asignacion = None
-    mejor_evaluacion = float('inf')
+    indices = list(range(r))
+    combinations_list = [tuple(items[i] for i in indices)]
 
-    for asignacion_posible in itertools.product(*estudiantes):
-        cupos = {materia[0]: int(materia[1]) for materia in materias}
-        asignacion_valida = True
-
-        for estudiante, materia in enumerate(asignacion_posible):
-            materia_codigo = materia[0]
-            if materia_codigo in cupos and cupos[materia_codigo] > 0:
-                cupos[materia_codigo] -= 1
-            else:
-                asignacion_valida = False
+    while True:
+        for i in reversed(range(r)):
+            if indices[i] != i + n - r:
                 break
+        else:
+            return combinations_list
 
-        if asignacion_valida:
-            evaluacion = calcular_evaluacion(materias, estudiantes, asignacion_posible)
+        indices[i] += 1
+        for j in range(i + 1, r):
+            indices[j] = indices[j - 1] + 1
 
-            if evaluacion < mejor_evaluacion:
-                mejor_asignacion = asignacion_posible
-                mejor_evaluacion = evaluacion
+        combinations_list.append(tuple(items[i] for i in indices))
 
-    return mejor_asignacion, mejor_evaluacion
+    
+# Función que genera combinaciones de asignaturas para un curso específico.
+def combinacionesAsignatura(materia, asignaturas, solicitudes):
 
-def escribir_resultados_en_archivo(nombre_archivo_salida, mejor_asignacion, mejor_evaluacion):
-    with open(nombre_archivo_salida, 'w') as archivo:
-        archivo.write(f"Costo\n")
-        archivo.write(f"{mejor_evaluacion}\n")
+  elementos = [e for e, asignacion in solicitudes.items() if materia in asignacion]
+  combinaciones = []
 
-        for estudiante, materias_asignadas in enumerate(mejor_asignacion):
-            ej, aj = materias_asignadas[0]
-            archivo.write(f"{ej},{aj}\n")
+  if asignaturas[materia] > findLength(elementos):
+    combinaciones.append(tuple(elementos)) 
+  else:
+    combinaciones = list(combinations(elementos, asignaturas[materia]))
+  
+  return combinaciones
 
-            for materia in materias_asignadas[1:]:
-                materia_codigo = materia  # Obtiene directamente el código de la materia
-                archivo.write(f"{materia_codigo}\n")
+# Función que genera todas las combinaciones posibles de asignaturas para todos los cursos.
+def combinacionesPosibles(asignaturas, solicitudes):
+
+  clavesAsignaturas = list(asignaturas.keys())
+  opcionesCombinar = []
+
+  for asignatura in clavesAsignaturas:
+    opcionesCombinar.append(combinacionesAsignatura(asignatura, asignaturas, solicitudes))
+
+  opciones = list(permutacion(*opcionesCombinar))
+  return opciones
+
+import time
+
+# Función que implementa el algoritmo de fuerza bruta para encontrar la asignación óptima.
+def rocFB(cantidadAsignaturas, cantidadEstudiantes, asignaturas, solicitudes):
+    tiempo_inicio = time.time()
+    clavesAsignaturas = list(asignaturas.keys())
+    opciones = combinacionesPosibles(asignaturas, solicitudes)
+
+    mejorOpcion = {}
+    inconformidad = 1
+
+    for opcion in range(0, findLength(opciones)):
+        posibleOpcion = {estudiante: [] for estudiante in solicitudes}
+
+        for asignatura in range(0, cantidadAsignaturas):
+            for estudiante in list(opciones[opcion][asignatura]):
+                posibleOpcion[estudiante].append(clavesAsignaturas[asignatura])
+
+        posibleInconformidad = inconformidadTotal(cantidadEstudiantes, posibleOpcion, solicitudes)
+
+        if posibleInconformidad < inconformidad:
+            mejorOpcion = posibleOpcion
+            inconformidad = posibleInconformidad
+    
+    tiempo_fin = time.time()
+    tiempo_ejecucion = tiempo_fin - tiempo_inicio
+    print(f"Tiempo de ejecución de rocFB: {tiempo_ejecucion} segundos")
+    
+    return [mejorOpcion, inconformidad]
 
 
 
-# Nombre del archivo de entrada y de salida
-nombre_archivo_entrada = "entrada1.txt"
-nombre_archivo_salida = "salidas1.txt"
 
-# Leer los datos desde el archivo
-materias, estudiantes = leer_datos_desde_archivo(nombre_archivo_entrada)
 
-# Ejecutar el algoritmo de asignación por fuerza bruta
-mejor_asignacion, mejor_evaluacion = asignacion_fuerza_bruta(materias, estudiantes)
+# Function which return length of string
+def findLength(string):
+ 
+    # Initialize count to zero
+    count = 0
+ 
+    # Counting character in a string
+    for i in string:
+        count += 1
+    # Returning count
+    return count
 
-# Escribir los resultados en el archivo de salida
-escribir_resultados_en_archivo(nombre_archivo_salida, mejor_asignacion, mejor_evaluacion)
+
+
+def Entrada(nombreArchivo):
+
+  global cupos, cantidadEstudiantesA
+with open(nombre_archivo_abrir, 'r') as entrada:
+
+  cupos = int(entrada.readline())
+
+
+  for lineas in range(0, cupos):
+    linea = entrada.readline()
+    linea = linea.split(",")
+    materias[linea[0]] = int(linea[1])
+
+  cantidadEstudiantesA = int(entrada.readline())
+
+  for estudiantes in range(0, cantidadEstudiantesA):
+    
+    estudiante = entrada.readline()
+    estudiante = estudiante.split(",")
+
+    nuevoEstudiante = {}
+    cantidadAsignaturaEstudiante = int(estudiante[1])
+    
+    for linea in range (0, cantidadAsignaturaEstudiante):
+      asigSolicitada = entrada.readline()
+      asigSolicitada = asigSolicitada.split(",")
+      nuevoEstudiante[asigSolicitada[0]] = int(asigSolicitada[1].strip())
+
+    asignacion[estudiante[0]] = nuevoEstudiante
+
+  entrada.close()
+
+def salida(nombre_archivo, distribucion, inconformidad, tipo_salida):
+    # Create the output file
+    nombre_archivo_salida = f"{nombre_archivo.split('.')[0]}_{tipo_salida}.{nombre_archivo.split('.')[1]}"
+
+    with open(nombre_archivo_salida, 'w', encoding='utf-8') as archivo_salida:
+        # Write the inconformity as a float with 15 decimal places
+        archivo_salida.write(f"{inconformidad:.15f}\n")
+
+        # Iterate through students and their assignments
+        for estudiante, asignaturas in distribucion.items():
+            # Write the student's name and the number of assigned subjects
+            archivo_salida.write(f"{estudiante},{len(asignaturas)}\n")
+            
+            # Write the assigned subjects for the student
+            for asignatura in asignaturas:
+                archivo_salida.write(f"{asignatura}\n")
+
+Entrada(nombre_archivo_abrir)
+
+BrutalForce = rocFB(cupos,cantidadEstudiantesA,materias,asignacion)
+print(BrutalForce)
+salida(nombre_archivo_abrir, BrutalForce[0], BrutalForce[1], 'rocFB')
