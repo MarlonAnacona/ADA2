@@ -1,95 +1,89 @@
 from pathlib import Path
-from entradas import leer_archivo_txt
 import copy
 
-asignaturasA = {}
-solicitudesA = {}
-cantidadEstudiantesA = 0
-cantidadAsignaturasA = 0
-nombre_archivo_abrir = './Pruebas/e_3_10_5.roc'
+def studentDissatisfaction(student, distribution, requests):
 
-def inconformidadEstudiante(estudiante, distribucion, solicitudes):
+    request = set(requests[student])
+    assignment = set(distribution[student])
+    unassigned = request - assignment
+    puntos_prioridad = 3 * len(request) - 1
+    unassigned_points = 0
 
-    solicitud = set(solicitudes[estudiante])
-    asignacion = set(distribucion[estudiante])
-    no_asignadas = solicitud - asignacion
-    puntos_prioridad = 3 * len(solicitud) - 1
-    puntos_no_asignados = 0
-
-    if len(no_asignadas) <= len(solicitud) // 2:
-        puntos_no_asignados = sum(solicitudes[estudiante][materia] for materia in no_asignadas)
+    if len(unassigned) <= len(request) // 2:
+        unassigned_points = sum(requests[student][subject] for subject in unassigned)
     else:
-        puntos_no_asignados = puntos_prioridad
-        puntos_no_asignados -= sum(solicitudes[estudiante][materia] for materia in asignacion)
+        unassigned_points = puntos_prioridad
+        unassigned_points -= sum(requests[student][subject] for subject in assignment)
 
-    inconformidad = (1 - len(asignacion) / len(solicitud)) * (puntos_no_asignados / puntos_prioridad)
+    dissatisfaction = (1 - len(assignment) / len(request)) * (unassigned_points / puntos_prioridad)
 
-    return inconformidad
+    return dissatisfaction
 
 
-def inconformidadTotal(cantidadEstudiantes, distribucion, solicitudes):
-    inconformidadGeneral = 0
+def generalDissatisfaction(total_student, distribution, requests):
+    general_dissatisfaction = 0
 
-    for estudiante in solicitudes:
-        inconformidadGeneral += inconformidadEstudiante(estudiante, distribucion, solicitudes)
+    for student in requests:
+        general_dissatisfaction += studentDissatisfaction(student, distribution, requests)
 
-    return inconformidadGeneral / cantidadEstudiantes
+    return general_dissatisfaction / total_student
 
 # devuelve una pareja (A, FhM,Ei(A)) tal que A es la respuesta al problema
 # rocV(k,r,M,E)
-def rocV(cantidadAsignaturas, cantidadEstudiantes, asignaturas, solicitudes):
-  solucion = {estudiante: [] for estudiante in solicitudes}
+def rocV(total_subjects, total_student, asignaturas, requests):
+  answer = {student: [] for student in requests}
   cuposRestantes = copy.deepcopy(asignaturas)
   
-  students_sorted = sorted(solicitudes.keys(), key=lambda estudiante: sum(solicitudes[estudiante].values()), reverse=True)
+  students_sorted = sorted(requests.keys(), key=lambda student: sum(requests[student].values()), reverse=True)
   
-  for estudiante in students_sorted:
-    courses_sorted = sorted(solicitudes[estudiante], key=lambda curso: -solicitudes[estudiante][curso])
+  for student in students_sorted:
+    courses_sorted = sorted(requests[student], key=lambda curso: -requests[student][curso])
     
     for curso in courses_sorted:
       if cuposRestantes[curso] > 0:
-        solucion[estudiante].append(curso)
+        answer[student].append(curso)
         cuposRestantes[curso] -= 1
   
-  inconformidad = inconformidadTotal(cantidadEstudiantes, solucion, solicitudes)
+  dissatisfaction = generalDissatisfaction(total_student, answer, requests)
   
-  return [solucion, inconformidad]
+  return [answer, dissatisfaction]
 
-def lecturaArchivo(nombreArchivo):
+def readFile(nombreArchivo):
+  with open(nombre_archivo_abrir, 'r') as entry:
+    total_student
+    total_subjects = int(entry.readline())
+    subjects = {}
+    requests = {}
 
-  global cantidadAsignaturasA, cantidadEstudiantesA
-with open(nombre_archivo_abrir, 'r') as entrada:
+    for i in range(0, total_subjects):
+      subject = entry.readline()
+      subject = subject.split(",")
+      subjects[subject[0]] = int(subject[1])
 
-  cantidadAsignaturasA = int(entrada.readline())
+    total_student = int(entry.readline())
 
-  for lineas in range(0, cantidadAsignaturasA):
-    linea = entrada.readline()
-    linea = linea.split(",")
-    asignaturasA[linea[0]] = int(linea[1])
+    for estudiantes in range(0, total_student):
+      
+      student = entry.readline()
+      student = student.split(",")
 
-  cantidadEstudiantesA = int(entrada.readline())
+      new_student = {}
+      cantidadAsignaturaEstudiante = int(student[1])
+      
+      for i in range (0, cantidadAsignaturaEstudiante):
+        asigSolicitada = entry.readline()
+        asigSolicitada = asigSolicitada.split(",")
+        new_student[asigSolicitada[0]] = int(asigSolicitada[1].strip())
 
-  for estudiantes in range(0, cantidadEstudiantesA):
-    
-    estudiante = entrada.readline()
-    estudiante = estudiante.split(",")
+      requests[student[0]] = new_student
 
-    nuevoEstudiante = {}
-    cantidadAsignaturaEstudiante = int(estudiante[1])
-    
-    for linea in range (0, cantidadAsignaturaEstudiante):
-      asigSolicitada = entrada.readline()
-      asigSolicitada = asigSolicitada.split(",")
-      nuevoEstudiante[asigSolicitada[0]] = int(asigSolicitada[1].strip())
+    entry.close()
+    return total_subjects, total_student, subjects, requests
 
-    solicitudesA[estudiante[0]] = nuevoEstudiante
+# readFile(nombre_archivo_abrir)
+nombre_archivo_abrir = './Pruebas/e_3_10_5.roc'
 
-  entrada.close()
-
-lecturaArchivo(nombre_archivo_abrir)
-
-voraz = rocV(cantidadAsignaturasA, cantidadEstudiantesA, asignaturasA, solicitudesA)
-# k, r, M, E = leer_archivo_txt(nombre_archivo_abrir)
-# voraz = rocV(k, r, M, E)
+k, r, M, E = readFile(nombre_archivo_abrir)
+voraz = rocV(k, r, M, E)
 
 print(voraz)
