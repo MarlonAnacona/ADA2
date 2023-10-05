@@ -1,4 +1,4 @@
-from pathlib import Path
+import time
 import copy
 
 def studentDissatisfaction(student, distribution, requests):
@@ -49,6 +49,7 @@ def format_output(data):
     return output
 
 def rocV(total_subjects, total_student, subjects, requests):
+  tiempo_inicio = time.time()
   answer = {student: [] for student in requests}
   cuposRestantes = copy.deepcopy(subjects)
   
@@ -66,6 +67,9 @@ def rocV(total_subjects, total_student, subjects, requests):
 
   result = [answer, dissatisfaction]
   output = format_output(result)
+  tiempo_fin = time.time()
+  tiempo_ejecucion = tiempo_fin - tiempo_inicio
+  print(f"Tiempo de ejecución de rocV: {tiempo_ejecucion:.6f} segundos")
   return output
 
 

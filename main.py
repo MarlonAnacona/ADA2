@@ -19,7 +19,7 @@ def procesar_archivo():
         resultado = procesamiento_fuerza_bruta(contenido)
         fin = time.time()
         tiempo_ejecucion = fin - inicio  # Calcula el tiempo de ejecución
-        resultado = f"Resultado de Programación Fuerza bruta\nTiempo de ejecución: {tiempo_ejecucion:.6f} segundos\n{resultado}"
+        # resultado = f"Resultado de Programación Fuerza bruta\nTiempo de ejecución: {tiempo_ejecucion:.6f} segundos\n{resultado}"
     elif tipo_programacion == "Dinámica":
         inicio = time.time()
         # Realizar el procesamiento utilizando Programación Dinámica
@@ -27,14 +27,14 @@ def procesar_archivo():
 
         fin = time.time()
         tiempo_ejecucion = fin - inicio  # Calcula el tiempo de ejecución
-        resultado = f"Resultado de Programación Dinámica\nTiempo de ejecución: {tiempo_ejecucion:.6f} segundos\n{resultado}"
+        # resultado = f"Resultado de Programación Dinámica\nTiempo de ejecución: {tiempo_ejecucion:.6f} segundos\n{resultado}"
     elif tipo_programacion == "Voraz":
         inicio = time.time()
         # Realizar el procesamiento utilizando Algoritmo Voraz
         resultado = procesamiento_voraz(contenido)
         fin = time.time()
         tiempo_ejecucion = fin - inicio  # Calcula el tiempo de ejecución
-        resultado = f"Resultado de Programación Voraz\nTiempo de ejecución: {tiempo_ejecucion:.6f} segundos\n{resultado}"
+        # resultado = f"Resultado de Programación Voraz\nTiempo de ejecución: {tiempo_ejecucion:.6f} segundos\n{resultado}"
     else:
         resultado = "Tipo de programación no válido"
 
@@ -61,7 +61,7 @@ def cargar_archivo():
             texto_entrada.delete(1.0, tk.END)  # Borra el contenido actual
             texto_entrada.insert(tk.END, contenido)  # Inserta el contenido del archivo
 
-        # Aquí puedes llamar a la función leer_archivo_txt del otro script y mostrar los resultados en la interfaz
+        # llamado a la función leer_archivo_txt y mostrar los resultados en la interfaz
         k, r, M, E = leer_archivo_txt(destino_path)
         return k, r, M, E # Retorna los datos del archivo para que puedan ser utilizados en la función procesar_archivo
 
@@ -86,7 +86,7 @@ def cargar_archivo2():
             texto_entrada.delete(1.0, tk.END)  # Borra el contenido actual
             texto_entrada.insert(tk.END, contenido)  # Inserta el contenido del archivo
 
-        # Aquí puedes llamar a la función leer_archivo_txt del otro script y mostrar los resultados en la interfaz
+        # llamado a la función Entrada y mostrar los resultados en la interfaz
         cupos, cantidadEstudiantesA, materias, asignacion = Entrada(destino_path)
         return cupos, cantidadEstudiantesA, materias, asignacion # Retorna los datos del archivo para que puedan ser utilizados en la función procesar_archivo
 
@@ -113,9 +113,8 @@ def cargar_archivo3():
         k, r, M, E = readFile(destino_path)
         return k, r, M, E # Retorna los datos del archivo para que puedan ser utilizados en la función procesar_archivo
 
-# Funciones de procesamiento de ejemplo (reemplaza con tus propias implementaciones)
+# Funciones de procesamiento de ejemplo
 def procesamiento_fuerza_bruta(contenido):
-    # Implementa la lógica de Fuerza Bruta aquí
     cupos, cantidadEstudiantesA, materias, asignacion = cargar_archivo2()
     contenido = fuerza_bruta.rocFB(cupos, cantidadEstudiantesA, materias, asignacion)
     return "Resultado de Fuerza Bruta \n" + str(contenido)
@@ -126,7 +125,6 @@ def procesamiento_dinamica(contenido):
     return "Resultado de Programación Dinámica: " + str(contenido)
 
 def procesamiento_voraz(contenido):
-    # Implementa la lógica de Algoritmo Voraz aquí
     k, r, M, E = cargar_archivo3()
     contenido = voraz.rocV(k, r, M, E)
     return "Resultado de Algoritmo Voraz \n" + str(contenido)
@@ -150,14 +148,6 @@ etiqueta_nombre_archivo = tk.Label(ventana, text="Nombre del archivo: ")
 # Botón para procesar el archivo
 boton_procesar = tk.Button(ventana, text="Subir archivo y procesar", command=procesar_archivo)
 
-# Área de texto para mostrar el contenido del archivo de entrada
-texto_entrada = tk.Text(ventana, wrap=tk.WORD, width=40, height=10)
-texto_entrada.insert(tk.END, "Aquí se mostrará el contenido del archivo de entrada.")
-
-# Área de texto para mostrar el resultado
-texto_salida = tk.Text(ventana, wrap=tk.WORD, width=40, height=10)
-texto_salida.insert(tk.END, "Aquí se mostrará el resultado del procesamiento.")
-
 # Posicionar los elementos en la ventana
 aviso.pack(pady=10)
 opciones_programacion_label.pack(pady=10)
@@ -165,6 +155,29 @@ for radio in opciones_programacion_radios:
     radio.pack()
 etiqueta_nombre_archivo.pack(pady=10)
 boton_procesar.pack(pady=10)
+
+# Función para crear una barra de desplazamiento para un área de texto
+def crear_barra_desplazamiento(area_texto, contenedor):
+    scrollbar = tk.Scrollbar(contenedor)
+    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+    scrollbar.config(command=area_texto.yview)
+    area_texto.config(yscrollcommand=scrollbar.set)
+
+# Crear un marco para el área de texto de entrada
+marco_entrada = tk.Frame(ventana)
+marco_entrada.pack(padx=10, pady=10)
+texto_entrada = tk.Text(marco_entrada, wrap=tk.WORD, width=40, height=10)
+texto_entrada.insert(tk.END, "Aquí se mostrará el contenido del archivo de entrada.")
+texto_entrada.pack(side=tk.LEFT)
+crear_barra_desplazamiento(texto_entrada, marco_entrada)
+
+# Crear un marco para el área de texto de salida
+marco_salida = tk.Frame(ventana)
+marco_salida.pack(padx=10, pady=10)
+texto_salida = tk.Text(marco_salida, wrap=tk.WORD, width=40, height=10)
+texto_salida.insert(tk.END, "Aquí se mostrará el resultado del procesamiento.")
+texto_salida.pack(side=tk.LEFT)
+crear_barra_desplazamiento(texto_salida, marco_salida)
 texto_entrada.pack(padx=10, pady=10)
 texto_salida.pack(padx=10, pady=10)
 
