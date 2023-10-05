@@ -3,6 +3,7 @@ from tkinter import filedialog
 from entradas import leer_archivo_txt
 import os
 import shutil
+import time
 from Algoritmos import dinamica
 
 # Función de procesamiento según el tipo seleccionado
@@ -14,8 +15,13 @@ def procesar_archivo():
         # Realizar el procesamiento utilizando Fuerza Bruta
         resultado = procesamiento_fuerza_bruta(contenido)
     elif tipo_programacion == "Dinámica":
+        inicio = time.time()
         # Realizar el procesamiento utilizando Programación Dinámica
         resultado = procesamiento_dinamica(contenido)
+
+        fin = time.time()
+        tiempo_ejecucion = fin - inicio  # Calcula el tiempo de ejecución
+        resultado = f"Resultado de Programación Dinámica\nTiempo de ejecución: {tiempo_ejecucion:.6f} segundos\n{resultado}"
     elif tipo_programacion == "Voraz":
         # Realizar el procesamiento utilizando Algoritmo Voraz
         resultado = procesamiento_voraz(contenido)
@@ -69,7 +75,7 @@ ventana = tk.Tk()
 ventana.title("Asignación de cupos")
 
 # Área de texto 
-aviso = tk.Label(ventana, text="Por favor primero seleccione una técnica de programación y luego suba un archivo de texto. Luego de subido puede probarlo con los tres tipos de algoritmos para probar con otro archivo distinto reinicie la interfaz.")
+aviso = tk.Label(ventana, text="Por favor primero seleccione una técnica de programación y luego suba un archivo de texto.")
 
 # Crear opciones de programación
 tipo_programacion_var = tk.StringVar()
