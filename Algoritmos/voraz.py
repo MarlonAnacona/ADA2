@@ -1,4 +1,4 @@
-from pathlib import Path
+import time
 import copy
 
 def studentDissatisfaction(student, distribution, requests):
@@ -27,7 +27,29 @@ def generalDissatisfaction(total_student, distribution, requests):
 
     return general_dissatisfaction / total_student
 
+def format_output(data):
+    # Separa los datos en las dos partes
+    dictionary, number = data
+
+    # Redondea el número a tres decimales
+    number_str = f'{number:.3f}'
+
+    # Inicializa una lista para almacenar las líneas del resultado
+    result = [number_str]
+
+    # Recorre el diccionario y su valor correspondiente
+    for key, values in dictionary.items():
+        key_line = f'{key},{len(values)}'
+        result.append(key_line)
+        result.extend(values)
+
+    # Convierte las líneas en una cadena de texto separada por saltos de línea
+    output = '\n'.join(result)
+
+    return output
+
 def rocV(total_subjects, total_student, subjects, requests):
+  tiempo_inicio = time.time()
   answer = {student: [] for student in requests}
   cuposRestantes = copy.deepcopy(subjects)
   
@@ -42,43 +64,19 @@ def rocV(total_subjects, total_student, subjects, requests):
         cuposRestantes[course] -= 1
   
   dissatisfaction = generalDissatisfaction(total_student, answer, requests)
-  
-  return [answer, dissatisfaction]
 
-def readFile(file):
-  with open(file, 'r') as entry:
-    total_subjects = int(entry.readline())
-    subjects = {}
-    requests = {}
+  result = [answer, dissatisfaction]
+  output = format_output(result)
+  tiempo_fin = time.time()
+  tiempo_ejecucion = tiempo_fin - tiempo_inicio
+  print(f"Tiempo de ejecución de rocV: {tiempo_ejecucion:.6f} segundos")
+  return output
 
-    for i in range(0, total_subjects):
-      subject = entry.readline()
-      subject = subject.split(",")
-      subjects[subject[0]] = int(subject[1].strip())
 
-    total_student = int(entry.readline())
 
-    for i in range(0, total_student):
-      
-      student = entry.readline()
-      student = student.split(",")
+# file = './Pruebas/e_3_5_5.roc'
 
-      new_student = {}
-      student_subject = int(student[1].strip())
-      
-      for j in range (0, student_subject):
-        requested_subject = entry.readline()
-        requested_subject = requested_subject.split(",")
-        new_student[requested_subject[0]] = int(requested_subject[1].strip())
+# k, r, M, E = readFile(file)
+# voraz = rocV(k, r, M, E)
 
-      requests[student[0]] = new_student
-
-    entry.close()
-    return total_subjects, total_student, subjects, requests
-
-file = './Pruebas/e_3_5_5.roc'
-
-k, r, M, E = readFile(file)
-voraz = rocV(k, r, M, E)
-
-print(voraz)
+# print(voraz)

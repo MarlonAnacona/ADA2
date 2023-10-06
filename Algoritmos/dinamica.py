@@ -1,7 +1,4 @@
-# from entradas import leer_archivo_txt
-import copy
-from collections import defaultdict
-
+import time
 import itertools
 
 matriz_combinaciones = []
@@ -220,10 +217,13 @@ def guardar_resultado_como_txt(resultado):
 
 
 def rocPD(k, r, M, E):
-
+    tiempo_inicio = time.time()
     estudiantes=convertirEstudiantesMateriasVectores(E,M)
     cupos = list(M.values())
     resultado1 = asignar_materia(estudiantes, cupos)
     resultado2 = list(M.keys())
-    
+    tiempo_fin = time.time()
+    tiempo_ejecucion = tiempo_fin - tiempo_inicio
+    print(f"Tiempo de ejecución de rocPD: {tiempo_ejecucion:.6f} segundos")
     return guardar_resultado_como_txt(resultado(resultado1, resultado2))
+
