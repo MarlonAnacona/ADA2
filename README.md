@@ -35,6 +35,8 @@ En está carpeta se encuentran los archivos de la implementación de cada una de
 ## Pruebas
 En está carpeta se almacenan los archivos que contienen las entradas en el formato de texto
 
+## IMPORTANTE (LEER)
+Cada que se cargue  un archivo; se creará uno nuevo en la carpeta de Pruebas con el nombre de este ultimo, al momento de probar el mismo archivo con diferente tipo de programación, deberán ser borradas este ultimo que se creo de lo contrario marcará error la aplicación
 
 #### Interfaz
 En la interfaz podra seleccionar alguna de las técnicas de programación y dar click en el botón de subir archivo y procesar.
@@ -42,6 +44,7 @@ En la interfaz podra seleccionar alguna de las técnicas de programación y dar 
 <p align="center">
     <img src="https://user-images.githubusercontent.com/95255931/272994691-f0676faf-673d-45be-99be-70ef74354360.jpg">
 </p>
+
 
 
 ## Authors
