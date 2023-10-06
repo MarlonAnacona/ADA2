@@ -10,10 +10,7 @@ En la raíz del proyecto se encuentra el ```informe.pdf``` acerca del desarrollo
 
 La aplicación requiere que tenga instalado ```python 3.10.11``` 
 
-Estando ubicado en la ruta del proyecto
-```bash
-  cd AnaconaCadenaGilVillanueva
-```
+Entre en la raiz del proyecto 
 
 Luego ejecute el siguiente comando para instalar las librerias necesarias:
 
