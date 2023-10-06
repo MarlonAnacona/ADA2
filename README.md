@@ -4,7 +4,9 @@
 En la raíz del proyecto se encuentra el ```informe.pdf``` acerca del desarrollo, también se encuentran unos archivos de entrada, ```entradaFB.py```,```entradaV.py``` y ```entradaPD.py``` estos se utilizan en los respectivos algoritmos para leer las entradas.
 
 
+## REPOSITORIO
 
+https://github.com/MarlonAnacona/ADA2 
 
 #### Requerimientos
 
@@ -42,7 +44,9 @@ En la interfaz podra seleccionar alguna de las técnicas de programación y dar 
     <img src="https://user-images.githubusercontent.com/95255931/272994691-f0676faf-673d-45be-99be-70ef74354360.jpg">
 </p>
 
+## NOTAS(SOLO SI OCURRE)
 
+Por alguna razón el programa tiene una falla despues de un tiempo con dinamica la cual en algunos casos da una respuesta no esperada, para solucionar esto es necesario reiniciar el  programa y eliminar los archivos .roc que se han generado en la carpeta de pruebas
 
 ## Authors
 
