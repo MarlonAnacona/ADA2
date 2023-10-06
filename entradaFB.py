@@ -28,4 +28,4 @@ def Entrada(nombre_archivo_abrir):
             asignacion[estudiante[0]] = nuevoEstudiante
 
     entrada.close()
-    return cupos, cantidadEstudiantesA, materias, asignacion
+    return cupos, materias, asignacion
