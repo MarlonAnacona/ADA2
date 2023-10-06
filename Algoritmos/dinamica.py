@@ -225,7 +225,5 @@ def rocPD(k, r, M, E):
     tiempo_fin = time.time()
     tiempo_ejecucion = tiempo_fin - tiempo_inicio
     print(f"Tiempo de ejecución de rocPD: {tiempo_ejecucion:.6f} segundos")
-    print(resultado1)
-    print(resultado2)
     return guardar_resultado_como_txt(resultado(resultado1, resultado2))
 
