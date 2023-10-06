@@ -87,8 +87,8 @@ def cargar_archivo2():
             texto_entrada.insert(tk.END, contenido)  # Inserta el contenido del archivo
 
         # llamado a la función Entrada y mostrar los resultados en la interfaz
-        cupos, cantidadEstudiantesA, materias, asignacion = Entrada(destino_path)
-        return cupos, cantidadEstudiantesA, materias, asignacion # Retorna los datos del archivo para que puedan ser utilizados en la función procesar_archivo
+        cupos, materias, asignacion = Entrada(destino_path)
+        return cupos, materias, asignacion # Retorna los datos del archivo para que puedan ser utilizados en la función procesar_archivo
 
 # Función para cargar un archivo y mostrar su contenido version 3
 def cargar_archivo3():
@@ -115,8 +115,8 @@ def cargar_archivo3():
 
 # Funciones de procesamiento de ejemplo
 def procesamiento_fuerza_bruta(contenido):
-    cupos, cantidadEstudiantesA, materias, asignacion = cargar_archivo2()
-    contenido = fuerza_bruta.rocFB(cupos, cantidadEstudiantesA, materias, asignacion)
+    cupos, materias, asignacion = cargar_archivo2()
+    contenido = fuerza_bruta.rocFB(cupos, materias, asignacion)
     return "Resultado de Fuerza Bruta \n" + str(contenido)
 
 def procesamiento_dinamica(contenido):
